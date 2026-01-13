@@ -1,0 +1,15 @@
+*tempt*
+.DS_Store
+node_modules
+package.json
+bun.lock
+thoughts/
+*claude*
+*opencode*
+prompt/
+data/*.xlsx
+sessions/session2/
+sessions/session3/
+sessions/session4/
+.github/
+sessions/session5/
