@@ -25,6 +25,10 @@ Session 1 introduces the fundamental concepts of data engineering by building a 
 ### Option 1: Using uv (Recommended)
 
 ```bash
+
+# install uv
+pip install uv
+
 cd sessions/session1
 uv venv
 source .venv/bin/activate
@@ -115,6 +119,9 @@ pytest tests/ -v --cov=code --cov-report=html
 cd sessions/session1
 docker-compose run ingest python -m pytest tests/ -v --cov=code --cov-report=html
 ```
+
+#### Expected Output
+![output py script](./images/image.png)
 
 ### Step 5: Verify Data
 
