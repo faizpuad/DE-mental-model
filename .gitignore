@@ -11,5 +11,5 @@ data/*.xlsx
 sessions/session2/
 sessions/session3/
 sessions/session4/
-.github/
+.github/workflows/ci-cd.yml
 sessions/session5/
