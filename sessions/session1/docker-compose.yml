@@ -21,7 +21,7 @@ services:
 
   ingest:
     build:
-      context: ..
+      context: .
       dockerfile: docker/Dockerfile
     container_name: session1_ingest
     environment:
