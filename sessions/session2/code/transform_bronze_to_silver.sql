@@ -45,11 +45,14 @@ WHERE description IS NOT NULL
 ON CONFLICT (stock_code) DO NOTHING;
 
 -- Step 3: Populate fact_sales_daily with daily aggregations
-INSERT INTO silver.fact_sales_daily (date_id, product_id, country, total_transactions, total_quantity, total_revenue, avg_unit_price)
+INSERT INTO silver.fact_sales_daily (date_id, product_id, country, customer_id, total_transactions, total_quantity, total_revenue, avg_unit_price)
 SELECT
     d.date_id,
     p.product_id,
     r.country,
+    MAX(
+        COALESCE(r.customerid::NUMERIC::INTEGER, -1)
+    ) AS customer_id,
     COUNT(DISTINCT r.invoiceno) as total_transactions,
     SUM(r.quantity) as total_quantity,
     SUM(r.quantity * r.unitprice) as total_revenue,
@@ -66,4 +69,5 @@ ON CONFLICT (date_id, product_id, country) DO UPDATE SET
     total_quantity = EXCLUDED.total_quantity,
     total_revenue = EXCLUDED.total_revenue,
     avg_unit_price = EXCLUDED.avg_unit_price,
+    customer_id = EXCLUDED.customer_id,
     updated_at = CURRENT_TIMESTAMP;

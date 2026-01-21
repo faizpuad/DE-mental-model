@@ -34,7 +34,7 @@ SELECT
         THEN ROUND(SUM(fsd.total_quantity)::NUMERIC / SUM(fsd.total_transactions), 2)
         ELSE 0
     END as avg_quantity_per_transaction,
-    COUNT(DISTINCT fsd.customer_id) as unique_customers,
+    COUNT(DISTINCT NULLIF(fsd.customer_id, -1)) AS unique_customers,
     0 as cancelled_transactions,
     0.00 as cancelled_revenue
 FROM silver.fact_sales_daily fsd
@@ -142,7 +142,7 @@ SELECT
     SUM(fsd.total_transactions) as total_transactions,
     COUNT(DISTINCT fsd.product_id) as total_products,
     COUNT(DISTINCT fsd.date_id) as total_days_active,
-    COUNT(DISTINCT fsd.customer_id) as unique_customers,
+    COUNT(DISTINCT NULLIF(fsd.customer_id, -1)) AS unique_customers,
     CASE
         WHEN SUM(fsd.total_transactions) > 0
         THEN ROUND(SUM(fsd.total_revenue)::NUMERIC / SUM(fsd.total_transactions), 2)
@@ -225,34 +225,43 @@ SELECT
     d.year,
     d.month,
     d.day_of_week,
-    d.day_of_month,
+    d.day AS day_of_month,
     d.quarter,
-    d.week_of_year,
-    d.day_of_week IN (6, 7) as is_weekend,
-    fsd.total_revenue,
-    fsd.total_quantity,
-    fsd.total_transactions,
-    COUNT(DISTINCT fsd.product_id) as total_products,
-    COUNT(DISTINCT fsd.country) as total_countries,
-    COUNT(DISTINCT fsd.customer_id) as unique_customers,
+    EXTRACT(WEEK FROM d.date)::INTEGER AS week_of_year,
+    d.is_weekend,
+    SUM(fsd.total_revenue) AS total_revenue,
+    SUM(fsd.total_quantity) AS total_quantity,
+    SUM(fsd.total_transactions) AS total_transactions,
+    COUNT(DISTINCT fsd.product_id) AS total_products,
+    COUNT(DISTINCT fsd.country) AS total_countries,
+    COUNT(DISTINCT NULLIF(fsd.customer_id, -1)) AS unique_customers,
     CASE
-        WHEN fsd.total_transactions > 0
-        THEN ROUND(fsd.total_revenue::NUMERIC / fsd.total_transactions, 2)
+        WHEN SUM(fsd.total_transactions) > 0
+        THEN ROUND(SUM(fsd.total_revenue)::NUMERIC / SUM(fsd.total_transactions), 2)
         ELSE 0
-    END as avg_revenue_per_transaction,
+    END AS avg_revenue_per_transaction,
     CASE
-        WHEN fsd.total_transactions > 0
-        THEN ROUND(fsd.total_quantity::NUMERIC / fsd.total_transactions, 2)
+        WHEN SUM(fsd.total_transactions) > 0
+        THEN ROUND(SUM(fsd.total_quantity)::NUMERIC / SUM(fsd.total_transactions), 2)
         ELSE 0
-    END as avg_quantity_per_transaction,
-    NULL as revenue_vs_previous_day,
-    NULL as revenue_vs_previous_day_pct,
-    NULL as quantity_vs_previous_day,
-    NULL as quantity_vs_previous_day_pct,
-    NULL as transactions_vs_previous_day,
-    NULL as transactions_vs_previous_day_pct
+    END AS avg_quantity_per_transaction,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL
 FROM silver.fact_sales_daily fsd
 JOIN silver.dim_date d ON fsd.date_id = d.date_id
+GROUP BY
+    fsd.date_id,
+    d.date,
+    d.year,
+    d.month,
+    d.day_of_week,
+    d.day,
+    d.quarter,
+    d.is_weekend
 ON CONFLICT (date_id) DO UPDATE SET
     total_revenue = EXCLUDED.total_revenue,
     total_quantity = EXCLUDED.total_quantity,

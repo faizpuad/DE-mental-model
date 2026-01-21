@@ -41,12 +41,21 @@ source .venv/bin/activate
 pip install -r requirement.txt
 ```
 
-### Option 3: Using Docker Compose
+### Option 3: Using Docker Compose (Recommended - includes postgres and superset)
 
 ```bash
 cd sessions/session2
 docker-compose up -d
 ```
+
+This will start:
+- **postgres**: PostgreSQL database (session1's data persists)
+- **superset**: Apache Superset BI tool
+- **transform**: Python transformation scripts
+
+**Note**: The postgres service uses session1's configuration so data persists across sessions. All sessions use the same database.
+
+Note: This will start postgres (session1's database), superset, and the transform service. The postgres service uses session1's configuration so data persists across sessions.
 
 Note: This will start postgres, superset, and related services. Ensure session1's postgres is running separately if using that database.
 
@@ -95,9 +104,9 @@ SELECT COUNT(*) FROM bronze.raw_transactions;
 
 ### Step 2: Run Transformation
 
-*Note:* Ensure previous docker postgres from session1 is running and has bronze schema and data populated.
 ```bash
-docker-compose -f ../session1/docker-compose.yml up -d postgres
+cd sessions/session2
+docker-compose up -d postgres transform
 ```
 
 #### Using Python
@@ -116,10 +125,7 @@ DRY_RUN=true python code/transform.py
 
 ```bash
 cd sessions/session2
-docker compose \
-  -f ../session1/docker-compose.yml \
-  -f ./docker-compose.yml \
-  up -d postgres transform
+docker-compose up -d postgres transform
 ```
 
 ### Step 3: Run Tests
@@ -482,11 +488,50 @@ The `fact_sales_daily` table is designed for date-based partitioning. To enable 
 
 ### Overview
 
-Apache Superset is an open-source business intelligence web application that provides data exploration and visualization capabilities. This section shows how to run Superset and connect it to your PostgreSQL database.
+Apache Superset is an open-source business intelligence web application that provides data exploration and visualization capabilities.
 
-### Start Superset
+### Start Superset (with PostgreSQL and Redis)
 
-Using Docker Compose:
+```bash
+cd sessions/session2
+docker-compose up -d superset superset_cache superset_db postgres
+```
+
+This will:
+- Start Superset web server
+- Start Redis for caching
+- Start Superset's PostgreSQL database (for metadata)
+- Start main PostgreSQL database (for retail data)
+
+### Access Superset
+
+1. Wait for Superset to initialize (may take 30-60 seconds)
+2. Open browser to: `http://localhost:8088`
+3. Login with default credentials:
+   - Username: `admin`
+   - Password: `admin`
+4. Change password on first login
+
+### Connect to PostgreSQL Database
+
+1. Go to **Data > Databases**
+2. Click **+ Database**
+3. Fill in connection details:
+   - Display Name: `Retail DB`
+   - SQLAlchemy URI: `postgresql://postgres:postgres@postgres:5432/retail_db`
+   - Click **Test Connection**
+   - Click **Connect**
+
+### Add Datasets
+
+1. Go to **Data > Datasets**
+2. Click **+ Dataset**
+3. Select **Retail DB** database
+4. Select schema `gold`
+5. Select table `fact_sales_monthly`
+6. Click **Add**
+
+Repeat for other tables: `fact_product_performance`, `fact_country_sales`, `fact_sales_daily_enhanced`
 
 ```bash
 cd sessions/session2
