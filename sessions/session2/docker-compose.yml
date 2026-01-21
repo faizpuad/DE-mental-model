@@ -1,23 +1,23 @@
 version: '3.8'
 
 services:
-  ## Use this postgres service if not using session1's postgres
-  # postgres:
-  #   image: postgres:15-alpine
-  #   container_name: session1_postgres
-  #   environment:
-  #     POSTGRES_USER: postgres
-  #     POSTGRES_PASSWORD: postgres
-  #     POSTGRES_DB: retail_db
-  #   ports:
-  #     - "5432:5432"
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "pg_isready -U postgres"]
-  #     interval: 5s
-  #     timeout: 5s
-  #     retries: 5
+  ## Use session1's postgres service
+  postgres:
+    image: postgres:15-alpine
+    container_name: session1_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: retail_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   ## Apache Superset Database (PostgreSQL for Superset)
   superset_db:
@@ -60,6 +60,7 @@ services:
     depends_on:
       - superset_db
       - superset_cache
+      - postgres
     ports:
       - "8088:8088"
     environment:
@@ -85,78 +86,30 @@ services:
       retries: 5
       start_period: 60s
 
-  ## Apache Superset - Celery Worker (Async Queries)
-  superset_worker:
-    image: apache/superset:3.1.0
-    container_name: superset_worker
-    command: >
-      celery --app=superset.tasks.celery_app:app worker --pool=prefork -O fair -c 4 --loglevel=INFO
-    depends_on:
-      - superset_db
-      - superset_cache
-    environment:
-      - SUPERSET_SECRET_KEY=${SUPERSET_SECRET_KEY:-thisismysecretkey12345678901234567890}
-      - DATABASE_DIALECT=postgresql
-      - DATABASE_HOST=superset_db
-      - DATABASE_PORT=5432
-      - DATABASE_USER=superset
-      - DATABASE_PASSWORD=superset
-      - DATABASE_DB=superset
-      - REDIS_HOST=superset_cache
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=${REDIS_PASSWORD:-redispass}
-      - PYTHONPATH=/app/pythonpath
-    volumes:
-      - ./superset_home:/app/superset_home
-      - ./superset_config:/app/pythonpath
-
-  ## Apache Superset - Celery Beat (Scheduled Tasks)
-  superset_worker_beat:
-    image: apache/superset:3.1.0
-    container_name: superset_worker_beat
-    command: >
-      celery --app=superset.tasks.celery_app:app beat --loglevel=INFO
-    depends_on:
-      - superset_db
-      - superset_cache
-    environment:
-      - SUPERSET_SECRET_KEY=${SUPERSET_SECRET_KEY:-thisismysecretkey12345678901234567890}
-      - DATABASE_DIALECT=postgresql
-      - DATABASE_HOST=superset_db
-      - DATABASE_PORT=5432
-      - DATABASE_USER=superset
-      - DATABASE_PASSWORD=superset
-      - DATABASE_DB=superset
-      - REDIS_HOST=superset_cache
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=${REDIS_PASSWORD:-redispass}
-      - PYTHONPATH=/app/pythonpath
-    volumes:
-      - ./superset_home:/app/superset_home
-      - ./superset_config:/app/pythonpath
-
-  transform:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile
-    container_name: session2_transform
-    environment:
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_NAME: retail_db
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-    depends_on:
-      postgres:
-        condition: service_healthy
-    volumes:
-      - ../code:/app/code
-      - ../tests:/app/tests
-      - pytest_coverage:/app/htmlcov
+  # transform:
+  #   build:
+  #     context: .
+  #     dockerfile: docker/Dockerfile
+  #   container_name: session2_transform
+  #   environment:
+  #     DB_HOST: postgres
+  #     DB_PORT: 5432
+  #     DB_NAME: retail_db
+  #     DB_USER: postgres
+  #     DB_PASSWORD: postgres
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   volumes:
+  #     - ./code:/app/code
+  #     - ./tests:/app/tests
+  #     - pytest_coverage:/app/htmlcov
 
 volumes:
-  # postgres_data:
-  pytest_coverage:
+  postgres_data:
+    external: true
+    name: session1_postgres_data
   superset_db_data:
   superset_home:
   superset_config:
+  # pytest_coverage:
