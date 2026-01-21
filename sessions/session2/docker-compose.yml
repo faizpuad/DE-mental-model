@@ -19,7 +19,7 @@ services:
       timeout: 5s
       retries: 5
 
-  ## Apache Superset Database (PostgreSQL for Superset)
+  # Superset metadata DB
   superset_db:
     image: postgres:15-alpine
     container_name: superset_db
@@ -35,18 +35,7 @@ services:
       timeout: 5s
       retries: 5
 
-  ## Apache Superset - Redis (Caching)
-  superset_cache:
-    image: redis:7-alpine
-    container_name: superset_cache
-    command: redis-server --requirepass ${REDIS_PASSWORD:-redispass}
-    healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-redispass}", "ping"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
-  ## Apache Superset - Web Server
+  # Superset web server (no Redis)
   superset:
     image: apache/superset:3.1.0
     container_name: superset_app
@@ -55,16 +44,15 @@ services:
       superset db upgrade &&
       superset fab create-admin --username admin --firstname Admin --lastname User --email admin@example.com --password admin &&
       superset init &&
-      gunicorn --bind 0.0.0.0:8088 --access-logfile - --workers 4 --worker-class gthread --threads 20 --timeout 120 --limit-request-line 4096 --limit-request-field-size 8190 superset.app:create_app()
+      gunicorn --bind 0.0.0.0:8088 --workers 4 --worker-class gthread --threads 20 --timeout 120 \"superset.app:create_app()\"
       "
     depends_on:
       - superset_db
-      - superset_cache
       - postgres
     ports:
       - "8088:8088"
     environment:
-      - SUPERSET_SECRET_KEY=${SUPERSET_SECRET_KEY:-thisismysecretkey12345678901234567890}
+      - SUPERSET_SECRET_KEY=thisismysecretkey1234567890
       - SUPERSET_LOAD_EXAMPLES=no
       - DATABASE_DIALECT=postgresql
       - DATABASE_HOST=superset_db
@@ -72,10 +60,6 @@ services:
       - DATABASE_USER=superset
       - DATABASE_PASSWORD=superset
       - DATABASE_DB=superset
-      - REDIS_HOST=superset_cache
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=${REDIS_PASSWORD:-redispass}
-      - PYTHONPATH=/app/pythonpath
     volumes:
       - ./superset_home:/app/superset_home
       - ./superset_config:/app/pythonpath
