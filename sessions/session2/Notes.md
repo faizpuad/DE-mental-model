@@ -128,7 +128,160 @@
   - Aggregated metrics
   - Business-optimized structure
   - High data quality
+  - Trend analysis indicators
+  - Performance-optimized for BI queries
 - Use case: BI dashboards, reporting, analytics
+- Tables:
+  - `fact_sales_monthly`: Monthly aggregated metrics
+  - `fact_product_performance`: Product-level performance analysis
+  - `fact_country_sales`: Country/regional sales analysis
+  - `fact_sales_daily_enhanced`: Daily metrics with trend analysis
+
+### Gold Layer Design Principles
+
+**Business Metric Focus**
+
+Gold layer tables are designed around business questions:
+- **Monthly Performance**: How did we do last month?
+- **Product Analysis**: Which products are performing best?
+- **Regional Analysis**: Which countries generate most revenue?
+- **Trend Analysis**: How are we performing over time?
+
+**Aggregation Strategies**
+
+1. **Temporal Aggregation**: Daily → Monthly → Quarterly → Yearly
+   - Reduces data volume
+   - Speeds up queries
+   - Aligns with reporting periods
+
+2. **Categorical Aggregation**: Product → Category, Country → Region
+   - Enables drill-down analysis
+   - Supports multiple levels of granularity
+
+3. **Performance Metrics**:
+   - SUM: Total revenue, quantity
+   - AVG: Average transaction value
+   - COUNT: Number of transactions, unique customers
+   - MIN/MAX: First/last sale dates
+
+**Trend Analysis**
+
+Gold layer includes comparative metrics:
+- **Period-over-Period**: Compare to previous day/week/month
+- **Percentage Change**: Growth rates
+- **Variance**: Deviation from average
+- **Moving Averages**: Smoothed trends
+
+**Indexing Strategy**
+
+Gold layer indexes optimize for common BI queries:
+- Date columns for time-series queries
+- Metric columns for top/bottom queries
+- Dimension columns for filtering
+- Composite indexes for common combinations
+
+**Data Quality Checks**
+
+Gold layer ensures:
+- Referential integrity maintained
+- No negative values in metrics
+- Proper handling of NULL values
+- Consistent date ranges
+- Accurate aggregations
+
+### Gold Layer Tables
+
+**fact_sales_monthly**
+
+Aggregates daily sales to monthly level for reporting:
+- Purpose: Executive dashboards, monthly reports
+- Grain: One row per month
+- Key metrics: Total revenue, quantity, transactions
+- Derived metrics: Averages, unique counts
+
+**fact_product_performance**
+
+Product-level lifetime metrics:
+- Purpose: Product analysis, inventory planning
+- Grain: One row per product
+- Key metrics: Lifetime revenue, quantity sold
+- Derived metrics: Daily averages, performance indicators
+
+**fact_country_sales**
+
+Country/regional performance metrics:
+- Purpose: Market analysis, geographical reporting
+- Grain: One row per country
+- Key metrics: Total revenue, quantity, transactions
+- Derived metrics: Average order value, market penetration
+
+**fact_sales_daily_enhanced**
+
+Enhanced daily metrics with trend analysis:
+- Purpose: Daily monitoring, KPI tracking
+- Grain: One row per day
+- Key metrics: Daily revenue, quantity, transactions
+- Trend metrics: Change vs previous day, percentage change
+- Flags: Weekend, holiday indicators
+
+### BI Visualization with Apache Superset
+
+**What is Apache Superset?**
+
+Open-source business intelligence platform for:
+- Interactive data exploration
+- Rich visualizations (50+ chart types)
+- Dashboard creation and sharing
+- SQL Lab for custom queries
+- Row-level security
+
+**Connecting Superset to PostgreSQL**
+
+1. Database connection using SQLAlchemy URI
+2. Import schemas: silver, gold
+3. Import tables from gold schema
+4. Define column types and metrics
+5. Create relationships between tables
+
+**Chart Types for Analytics**
+
+**Time Series Charts:**
+- Line charts: Trends over time
+- Area charts: Volume over time
+- Bar charts: Period comparisons
+
+**Comparison Charts:**
+- Bar charts: Category comparison
+- Pie charts: Part-to-whole
+- Treemaps: Hierarchical data
+
+**Geographical Charts:**
+- World maps: Country performance
+- Choropleth maps: Regional intensity
+
+**Advanced Visualizations:**
+- Heatmaps: Correlation analysis
+- Pivot tables: Multi-dimensional analysis
+- Box plots: Distribution analysis
+
+**Dashboard Best Practices**
+
+1. **KPIs at Top**: Key metrics visible first
+2. **Drill-down Capability**: Click to explore details
+3. **Filters**: Interactive filters for focus
+4. **Consistent Colors**: Same colors for same dimensions
+5. **Clear Labels**: Descriptive titles and axis labels
+6. **Performance**: Optimize queries for fast loading
+
+**Superset vs Traditional BI**
+
+| Aspect | Superset | Traditional BI |
+|--------|----------|----------------|
+| Cost | Free (open-source) | Expensive licenses |
+| Flexibility | Highly customizable | Limited customization |
+| Integration | Easy with modern DB | Requires connectors |
+| Learning Curve | Medium | High |
+| Support | Community | Vendor support |
 
 ## Implementation Considerations
 
@@ -156,3 +309,31 @@
 - Check for null/invalid values
 - Monitor data volumes and row counts
 - Implement reconciliation checks between layers
+- Gold layer: Validate business logic consistency
+- Gold layer: Check trend metric calculations
+
+### Gold Layer Best Practices
+
+**Aggregation Design**
+- Choose appropriate granularity (daily, weekly, monthly)
+- Store raw metrics and derived metrics
+- Include time-based filters for performance
+- Materialize expensive aggregations
+
+**Performance Optimization**
+- Index frequently queried columns
+- Use materialized views for complex aggregations
+- Partition large tables by date
+- Optimize join patterns
+
+**Business Alignment**
+- Consult business users on metrics definitions
+- Document metric calculations
+- Provide consistent metric definitions across tables
+- Include business-friendly column names
+
+**Trend Analysis Implementation**
+- Calculate period-over-period comparisons
+- Handle edge cases (first day, missing data)
+- Document calculation methodology
+- Provide context for trend metrics
