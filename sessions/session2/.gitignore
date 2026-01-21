@@ -8,4 +8,3 @@ htmlcov/
 __pycache__/
 .DS_Store
 superset_home/
-superset_config/
