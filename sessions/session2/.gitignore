@@ -1,4 +1,5 @@
 .env
+.env.superset
 .venv
 data/*.xlsx
 .coverage
@@ -6,3 +7,5 @@ htmlcov/
 .ipynb_checkpoints
 __pycache__/
 .DS_Store
+superset_home/
+superset_config/
