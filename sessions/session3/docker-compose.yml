@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: session3_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: retail_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  idempotent:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: session3_idempotent
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: retail_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./code:/app/code
+    command: python code/idempotent_pipeline.py
+    profiles:
+      - idempotent
+
+  reliable:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: session3_reliable
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: retail_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./code:/app/code
+    command: python code/reliable_pipeline.py
+    profiles:
+      - reliable
+
+volumes:
+  postgres_data:
