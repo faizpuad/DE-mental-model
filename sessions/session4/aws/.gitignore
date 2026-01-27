@@ -1,0 +1,44 @@
+# AWS Configuration (contains sensitive data)
+aws_config.env
+*.env
+!.env.example
+
+# Test scripts
+test_rds_connection.sh
+
+# dbt artifacts
+target/
+logs/
+dbt_packages/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Temporary files
+*.tmp
+*.log
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Data files (if copied locally)
+*.xlsx
+*.csv
+*.parquet

@@ -1,0 +1,50 @@
+name: 'retail_pipeline_local'
+version: '1.0.0'
+config-version: 2
+
+profile: 'retail_pipeline_local'
+
+model-paths: ["models"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  retail_pipeline_local:
+    bronze:
+      +materialized: table
+      +schema: bronze
+      +tags: ["bronze", "source"]
+
+    silver:
+      +materialized: table
+      +schema: silver
+      +tags: ["silver", "analytics"]
+
+      dim_date:
+        +materialized: table
+        +tags: ["dimension"]
+
+      dim_product:
+        +materialized: table
+        +tags: ["dimension"]
+
+      fact_sales_daily:
+        +materialized: table
+        +unique_key: ['date_id', 'product_id', 'country']
+        +tags: ["fact"]
+
+    gold:
+      +materialized: table
+      +schema: gold
+      +tags: ["gold", "business"]
+
+on-run-start:
+  - "{{ log('Starting dbt run', info=True) }}"
+
+on-run-end:
+  - "{{ log('Completed dbt run', info=True) }}"

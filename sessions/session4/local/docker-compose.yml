@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+  # PostgreSQL database (same pattern as Sessions 1-3)
+  postgres:
+    image: postgres:15-alpine
+    container_name: session4_postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-retail_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ../../../data:/data:ro  # Mount shared data directory
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - session4_network
+
+  # Pipeline orchestrator with cron
+  pipeline:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: session4_pipeline
+    ports:
+      - "8000:8000"
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-retail_db}
+      DATA_FILE: /data/online_retail.xlsx
+      LOG_LEVEL: INFO
+      # Cron schedule (every 5 minutes for testing)
+      CRON_SCHEDULE: "*/5 * * * *"
+    volumes:
+      - ./scripts:/app/scripts
+      - ./dbt_project:/app/dbt_project
+      - ./logs:/app/logs
+      - ../../../data:/data:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - session4_network
+    command: ["/app/scripts/start_cron.sh"]
+
+  # Optional: Superset for visualization (reuse from Session 2)
+  superset:
+    image: apache/superset:3.1.0
+    container_name: session4_superset
+    command: >
+      sh -c "
+      superset db upgrade &&
+      superset fab create-admin --username admin --firstname Admin --lastname User --email admin@example.com --password admin &&
+      superset init &&
+      gunicorn --bind 0.0.0.0:8088 --workers 2 --worker-class gthread --threads 10 --timeout 120 'superset.app:create_app()'
+      "
+    ports:
+      - "8088:8088"
+    environment:
+      SUPERSET_SECRET_KEY: ${SUPERSET_SECRET_KEY:-changeme}
+      DATABASE_DIALECT: postgresql
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_USER: ${POSTGRES_USER:-postgres}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      DATABASE_DB: ${POSTGRES_DB:-retail_db}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - superset_home:/app/superset_home
+    networks:
+      - session4_network
+
+networks:
+  session4_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  superset_home:
