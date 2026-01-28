@@ -1,0 +1,71 @@
+version: 2
+
+models:
+  - name: dim_date
+    description: "Date dimension for time-based analytics"
+    columns:
+      - name: date_id
+        description: "Date identifier in YYYYMMDD format"
+        tests:
+          - unique
+          - not_null
+
+      - name: date
+        description: "Date value"
+        tests:
+          - unique
+          - not_null
+
+      - name: is_weekend
+        description: "Boolean flag for weekend dates"
+        tests:
+          - not_null
+
+  - name: dim_product
+    description: "Product dimension with categorization"
+    columns:
+      - name: product_id
+        description: "Surrogate key for product"
+        tests:
+          - unique
+          - not_null
+
+      - name: stock_code
+        description: "Natural key (stock code from source)"
+        tests:
+          - unique
+          - not_null
+
+      - name: category
+        description: "Product category"
+        tests:
+          - not_null
+
+  - name: fact_sales_daily
+    description: "Daily aggregated sales metrics"
+    columns:
+      - name: date_id
+        description: "Foreign key to dim_date"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_id
+
+      - name: product_id
+        description: "Foreign key to dim_product"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_product')
+              field: product_id
+
+      - name: total_revenue
+        description: "Total revenue"
+        tests:
+          - not_null
+
+      - name: total_quantity
+        description: "Total quantity sold"
+        tests:
+          - not_null

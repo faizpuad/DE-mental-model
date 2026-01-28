@@ -1,0 +1,151 @@
+version: 2
+
+models:
+  - name: monthly_sales_summary
+    description: "Monthly aggregated sales metrics for executive dashboards"
+    columns:
+      - name: year
+        description: "Year"
+        tests:
+          - not_null
+
+      - name: month
+        description: "Month (1-12)"
+        tests:
+          - not_null
+
+      - name: total_revenue
+        description: "Total revenue for the month"
+        tests:
+          - not_null
+
+  - name: top_products_by_revenue
+    description: "Top 100 products ranked by total revenue"
+    columns:
+      - name: stock_code
+        description: "Product stock code"
+        tests:
+          - not_null
+
+      - name: total_revenue
+        description: "Total revenue for the product"
+        tests:
+          - not_null
+
+  - name: country_performance
+    description: "Country-level sales performance metrics"
+    columns:
+      - name: country
+        description: "Country name"
+        tests:
+          - unique
+          - not_null
+
+      - name: total_revenue
+        description: "Total revenue for the country"
+        tests:
+          - not_null
+
+  # Customer-Centric Gold Tables (with customer_id granularity)
+
+  - name: customer_lifetime_value
+    description: "Customer lifetime value analysis - one row per customer"
+    columns:
+      - name: customer_id
+        description: "Unique customer identifier"
+        tests:
+          - unique
+          - not_null
+
+      - name: country
+        description: "Customer's country"
+        tests:
+          - not_null
+
+      - name: total_lifetime_value
+        description: "Total revenue from customer"
+        tests:
+          - not_null
+
+      - name: total_orders
+        description: "Total number of orders placed"
+        tests:
+          - not_null
+
+      - name: customer_segment
+        description: "Customer segment (VIP, High Value, Medium, Low, Very Low)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['VIP', 'High Value', 'Medium Value', 'Low Value', 'Very Low Value']
+
+      - name: recency_category
+        description: "Customer activity recency"
+        tests:
+          - not_null
+
+  - name: customer_monthly_activity
+    description: "Customer activity by month - grain: customer × month"
+    columns:
+      - name: customer_id
+        description: "Customer identifier"
+        tests:
+          - not_null
+
+      - name: year
+        description: "Year"
+        tests:
+          - not_null
+
+      - name: month
+        description: "Month (1-12)"
+        tests:
+          - not_null
+
+      - name: monthly_revenue
+        description: "Revenue from customer in this month"
+        tests:
+          - not_null
+
+      - name: monthly_orders
+        description: "Number of orders in this month"
+        tests:
+          - not_null
+
+      - name: customer_tenure_months
+        description: "Number of months since customer's first purchase"
+        tests:
+          - not_null
+
+  - name: customer_product_affinity
+    description: "Customer product preferences - grain: customer × product"
+    columns:
+      - name: customer_id
+        description: "Customer identifier"
+        tests:
+          - not_null
+
+      - name: product_id
+        description: "Product identifier"
+        tests:
+          - not_null
+
+      - name: stock_code
+        description: "Product stock code"
+        tests:
+          - not_null
+
+      - name: total_product_revenue
+        description: "Total revenue from this customer-product combination"
+        tests:
+          - not_null
+
+      - name: times_purchased
+        description: "Number of times customer bought this product"
+        tests:
+          - not_null
+
+      - name: affinity_level
+        description: "Customer affinity level for this product"
+        tests:
+          - not_null

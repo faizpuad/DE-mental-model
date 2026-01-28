@@ -8,6 +8,5 @@ thoughts/
 *opencode*
 prompt/
 data/*.xlsx
-sessions/session4/
 .github/workflows/ci-cd.yml
 sessions/session5/

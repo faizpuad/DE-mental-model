@@ -1,0 +1,44 @@
+# dbt Profile for AWS RDS Connection
+# This profile allows local dbt to connect to AWS RDS PostgreSQL
+# Copy this to your dbt project or use --profiles-dir flag
+
+retail_pipeline_aws:
+  target: aws
+  outputs:
+    # AWS RDS target (for production)
+    aws:
+      type: postgres
+      host: "{{ env_var('AWS_RDS_HOST') }}"  # From CloudFormation output
+      port: 5432
+      user: postgres
+      password: "{{ env_var('AWS_RDS_PASSWORD') }}"
+      dbname: retail_db
+      schema: public_silver
+      threads: 4
+      keepalives_idle: 0
+      connect_timeout: 30
+      search_path: public_silver,public_gold,bronze,public
+
+    # Local development target (fallback)
+    local:
+      type: postgres
+      host: localhost
+      port: 5432
+      user: postgres
+      password: postgres
+      dbname: retail_db
+      schema: public_silver
+      threads: 4
+      keepalives_idle: 0
+      connect_timeout: 10
+
+# Usage:
+# 1. Set environment variables:
+#    export AWS_RDS_HOST="your-rds-endpoint.amazonaws.com"
+#    export AWS_RDS_PASSWORD="your-secure-password"
+#
+# 2. Run dbt targeting AWS:
+#    dbt run --profiles-dir ./aws/dbt_profile --target aws
+#
+# 3. Test connection:
+#    dbt debug --profiles-dir ./aws/dbt_profile --target aws

@@ -1,0 +1,35 @@
+version: 2
+
+sources:
+  - name: bronze
+    description: "Raw transaction data from source system"
+    database: retail_db
+    schema: bronze
+    tables:
+      - name: raw_transactions
+        description: "Raw retail transactions"
+        columns:
+          - name: id
+            description: "Auto-incrementing primary key"
+            tests:
+              - unique
+              - not_null
+
+          - name: invoiceno
+            description: "Invoice number"
+            tests:
+              - not_null
+
+          - name: stockcode
+            description: "Product stock code"
+            tests:
+              - not_null
+
+          - name: invoicedate
+            description: "Invoice timestamp"
+            tests:
+              - not_null
+
+        freshness:
+          warn_after: {count: 24, period: hour}
+          error_after: {count: 48, period: hour}
