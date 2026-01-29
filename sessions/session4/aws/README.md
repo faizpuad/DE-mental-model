@@ -194,10 +194,10 @@ export $(grep -v '^#' ../aws_config.env | xargs) && dbt debug --profiles-dir ../
 dbt debug --profiles-dir ../aws/dbt_project --target aws
 
 # Run dbt models (creates silver and gold layers in RDS)
-export $(grep -v '^#' ../.env | xargs) && dbt run --profiles-dir ../dbt_project --target aws
+export $(grep -v '^#' ../aws_config.env | xargs) && dbt run --profiles-dir ../dbt_project --target aws
 
 # Run dbt tests
-export $(grep -v '^#' ../.env | xargs) && dbt test --profiles-dir ../dbt_project --target aws
+export $(grep -v '^#' ../aws_config.env | xargs) && dbt test --profiles-dir ../dbt_project --target aws
 ```
 
 ### Step 7: Verify Data
