@@ -91,13 +91,10 @@ make test
 ## 📖 Learning Path
 
 ### Step 1: Master Local (1-2 hours)
-Follow [local/STEP_BY_STEP_GUIDE.md](local/STEP_BY_STEP_GUIDE.md)
+Follow [local/STEP_BY_STEP_GUIDE](local/README.md)
 
 ### Step 2: Deploy to AWS (1-2 hours)
 Follow [aws/README.md](aws/README.md)
-
-### Step 3: Compare (30 minutes)
-Read [LOCAL_VS_AWS_COMPARISON.md](LOCAL_VS_AWS_COMPARISON.md)
 
 ---
 
@@ -112,4 +109,4 @@ Read [LOCAL_VS_AWS_COMPARISON.md](LOCAL_VS_AWS_COMPARISON.md)
 
 ---
 
-**Ready to start?** Go to [local/STEP_BY_STEP_GUIDE.md](local/STEP_BY_STEP_GUIDE.md) 🚀
+**Ready to start?** Go to [local/STEP_BY_STEP_GUIDE.md](local/README.md) 🚀
