@@ -140,6 +140,7 @@ This will create:
 
 ```bash
 # Load generated configuration
+cd aws/
 source aws_config.env
 
 # Verify configuration
@@ -189,7 +190,7 @@ python3 ingest_from_s3_to_rds.py \
 cd ../aws/dbt_project
 
 # Test dbt connection to AWS RDS
-export $(grep -v '^#' ../.env | xargs) && dbt debug --profiles-dir ../dbt_project --target aws
+export $(grep -v '^#' ../aws_config.env | xargs) && dbt debug --profiles-dir ../dbt_project --target aws
 dbt debug --profiles-dir ../aws/dbt_project --target aws
 
 # Run dbt models (creates silver and gold layers in RDS)
