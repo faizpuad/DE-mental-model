@@ -18,7 +18,6 @@ Parameters:
     NoEcho: true
     MinLength: 8
     Description: RDS PostgreSQL master password
-    Default: MySecurePassword123
 
   DataBucketName:
     Type: String
@@ -243,7 +242,7 @@ Resources:
       VPCSecurityGroups:
         - !Ref DBSecurityGroup
       PubliclyAccessible: true
-      BackupRetentionPeriod: 7
+      BackupRetentionPeriod: 0
       PreferredBackupWindow: '03:00-04:00'
       PreferredMaintenanceWindow: 'sun:04:00-sun:05:00'
       EnableCloudwatchLogsExports:

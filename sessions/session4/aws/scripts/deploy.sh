@@ -20,7 +20,7 @@ AWS_REGION="${AWS_REGION:-us-east-1}"
 STACK_NAME="${STACK_NAME:-retail-pipeline-session4}"
 PROJECT_NAME="retail-pipeline-session4"
 ENVIRONMENT="${ENVIRONMENT:-dev}"
-DB_PASSWORD="${DB_PASSWORD:-MySecurePassword123}"
+DB_PASSWORD="${DB_PASSWORD:-YourSecurePassword123}"
 DATA_BUCKET_NAME="${DATA_BUCKET_NAME:-retail-pipeline-data-session4-$(date +%s)}"
 
 CURRENT_IP=$(curl -s https://checkip.amazonaws.com)
@@ -40,7 +40,7 @@ read -p "Continue with deployment? (yes/no): " confirm
 echo -e "${GREEN}Step 1: Deploying CloudFormation stack...${NC}"
 
 aws cloudformation deploy \
-  --template-file ../../infrastructure/cloudformation.yml \
+  --template-file ../infrastructure/cloudformation.yml \
   --stack-name "$STACK_NAME" \
   --parameter-overrides \
     ProjectName="$PROJECT_NAME" \

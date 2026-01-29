@@ -63,7 +63,7 @@ The syllabus is curated from comprehensive experience including:
 - Branching strategies and merge techniques
 - Remote collaboration workflows
 - Pull request processes and code review
-- Advanced Git features (rebase, stash, cherry-pick)
+- Advanced Git features such as rebase, stash, cherry-pick
 
 **Advanced Section**: Pipeline Reliability
 - Idempotency patterns and checkpoint mechanisms
@@ -78,26 +78,26 @@ The syllabus is curated from comprehensive experience including:
 
 **Deliverable**: Professional Git workflow skills and understanding of production reliability patterns
 
-### Session 4: Orchestration & Operations
-**Objective**: Build production-ready data pipeline automation
+### Session 4: AWS Data Engineering Fundamentals
+**Objective**: Master cloud data engineering by building the same pipeline locally and on AWS
 
 **Core Components**:
-- Airflow DAG development and scheduling
-- Pipeline monitoring and alerting
-- Infrastructure as code with Terraform
-- CI/CD pipeline implementation
-- Cloud deployment strategies
+- Local development with Docker, PostgreSQL, and dbt
+- AWS cloud deployment with S3, RDS, and Lambda
+- Medallion architecture implementation (Bronze, Silver, Gold layers)
+- Production-ready data transformation patterns
+- Cloud monitoring and cost optimization
 
 **Technical Focus**:
-- Workflow orchestration concepts
-- Infrastructure automation
-- Production monitoring and maintenance
-- Scalability and reliability patterns
+- Local vs AWS architecture comparison
+- dbt transformations for data modeling
+- AWS services integration
+- Production deployment strategies
+- Cost optimization and monitoring
 
-**Deliverable**: Production-grade orchestrated data pipeline with monitoring and automation
+**Deliverable**: Complete data pipeline working in both local and AWS environments
 
 ## Learning Outcomes
-
 **Technical Skills**:
 - Database design and SQL proficiency
 - Data pipeline development and optimization

@@ -12,36 +12,33 @@ This directory contains the AWS implementation of the retail data pipeline. The 
 ## Architecture Overview
 
 ```
-┌────────────────────────────────────────────────────────────┐
-│                        AWS Cloud                           │
-│                                                            │
-│  ┌──────────┐   triggers   ┌──────────┐   notifies         │
-│  │  S3      │─────────────>│  Lambda  │────────────>       │
-│  │  Bucket  │              │  Event   │            SNS     │
-│  └──────────┘              │  Handler │            Topic   │
-│      │                     └──────────┘             │      │
-│      │                          │                   │      │
-│      │                          v                   │      │
-│      │                     ┌──────────┐             │      │
-│      │                     │   RDS    │             │      │
-│      │                     │PostgreSQL│             │      │
-│      │                     │  (public)│<───┐        │      │
-│      │                     └──────────┘    │        │      │
-└──────│─────────────────────────────────────│────────│──────┘
-       │                                     │        │
-       │ download                            │        │ email
-       v                                     │        v
-┌────────────────────────────────────────────────────────┐
-│                   Local Development                    │
-│                                                        │
-│  ┌──────────┐  ingest  ┌───────────┐  transform        │
-│  │S3 → Local│─────────>│   dbt     │────────────>      │
-│  │ Download │          │   Local   │            RDS    │
-│  └──────────┘          │Connection │             ^     │
-│                        └───────────┘             │     │
-│                             │                    │     │
-│                             └────────────────────┘     │
-└────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                                     AWS CLOUD                                    │
+│                                                                                  │
+│   ┌──────────────┐      ┌──────────────┐      ┌──────────────┐      ┌────────┐   │
+│   │ EventBridge  │─────>│    Lambda    │─────>│   S3 Bucket  │─────>│  SNS   │───┐
+│   │  (Schedule)  │      │ (Pull/Check) │      │    (Data)    │      │ (Email)│   │
+│   └──────────────┘      └──────────────┘      └──────▲───────┘      └────────┘   │
+│                                                      │                   ▲       │
+│   ┌──────────────┐      ┌──────────────┐             │                   │       │
+│   │  S3 Event    │─────>│    Lambda    │─────────────┼───────────────────┘       │
+│   │   Trigger    │      │   (Notify)   │             │                           │
+│   └──────▲───────┘      └──────────────┘             │                           │
+│          │                                           │                           │
+└──────────┼───────────────────────────────────────────┼───────────────────────────┘
+           │                                           │
+    (S3 Notification)                         (Upload / API Call)
+           │                                           │
+┌──────────┴───────────────────────────────────────────┴───────────────────────────┐
+│                              LOCAL DEVELOPMENT                                   │
+│                                                                                  │
+│  1. Setup:         initialize_rds.py  ────> [ Create Bronze Schema in RDS ]      │
+│                                                                                  │
+│  2. Ingestion:     ingest_s3_to_rds.py ───> [ Transform & Push to Bronze ]       │
+│                                                                                  │
+│  3. Transformation: dbt run (Manual)   ───> [ Create Silver & Gold in RDS ]      │
+│                                                                                  │
+└──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ## Key Architectural Decision
@@ -437,12 +434,13 @@ This will:
 
 ## Next Steps
 
-1. **Automation**: Create CI/CD pipeline with GitHub Actions
-2. **Scheduling**: Set up automated dbt runs via cron or Airflow
-3. **Monitoring**: Add custom CloudWatch dashboards
+1. **Automation**: Create automated deployment scripts with AWS CLI
+2. **Scheduling**: Set up automated dbt runs via EventBridge or cron
+3. **Monitoring**: Add custom CloudWatch dashboards and alerts
 4. **Security**: Implement AWS Secrets Manager for passwords
-5. **Optimization**: Add incremental dbt models
-6. **Documentation**: Generate and publish dbt docs
+5. **Optimization**: Add incremental dbt models and performance tuning
+6. **Documentation**: Generate and publish dbt documentation
+7. **Cost Management**: Implement budget alerts and resource optimization
 
 ## Resources
 
