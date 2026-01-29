@@ -1,10 +1,10 @@
-# Session 3: Git Collaboration & Version Control
+# Session 3: Git Fundamentals & Collaboration
 
 ## Overview
 
-Session 3 focuses on Git collaboration, version control workflows, and team development practices. You'll learn essential Git commands, branching strategies, merge techniques, and how to work effectively in a collaborative development environment.
+Session 3 focuses on essential Git skills for collaborative development. You'll master the core Git workflow, from initializing a repository to collaborating with team members through pull requests and rebase.
 
-**Note**: An advanced section on pipeline reliability is available in the `advanced/` folder for learners who want to explore production-grade data pipeline concepts after completing the Git curriculum.
+**Note**: Advanced pipeline reliability topics are available in the `advanced-pipeline-reliability/` folder for learners who want to explore production-grade data engineering concepts after mastering Git fundamentals.
 
 ## Prerequisites
 
@@ -15,48 +15,39 @@ Session 3 focuses on Git collaboration, version control workflows, and team deve
 
 ## Learning Objectives
 
-### Primary Focus: Git Collaboration
-- Set up Git repository and basic configuration
-- Master essential Git commands (add, commit, push, pull)
-- Understand branching strategies and workflows
-- Learn merge techniques and conflict resolution
-- Practice remote collaboration with GitHub/GitLab
-- Implement stash for work-in-progress management
-- Use rebase for clean commit history
+### Core Git Fundamentals
+- Repository initialization and configuration (`git init`, `git config`)
+- Essential Git workflow commands (`git status`, `git add`, `git commit`)
+- Remote repository operations (`git clone`, `git push`, `git pull`)
+- GitHub collaboration workflows (fork, pull request, merge)
 
-### Advanced (Optional): Pipeline Reliability
-- Implement idempotent month-based processing for gold layer
-- Build checkpoint mechanism using ops.processed_months table
-- Add retry logic with exponential backoff
-- Implement structured JSON logging (info/warning/error)
-- Make pipeline safe to re-run without double-counting
+### Advanced Git Features
+- Branch creation and management
+- Merge techniques and conflict resolution
+- Clean commit history with `git rebase`
+- Work-in-progress management with `git stash`
 
 ## Git Curriculum Structure
 
-### Module 1: Git Basic Setup
-- Repository initialization and configuration
-- Basic Git commands and concepts
-- First commit and push operations
+### Module 1: Repository Setup & Basic Workflow
+- Repository initialization (`git init`)
+- Basic configuration (`git config`)
+- Essential workflow: `git status`, `git add`, `git commit`
 
-### Module 2: Branching Strategy
-- Creating and managing branches
-- Branch naming conventions
-- Feature branch workflow
+### Module 2: Remote Collaboration
+- GitHub repository operations (fork, clone)
+- Working with remotes (`git push`, `git pull`)
+- Pull request workflow through GitHub interface
 
-### Module 3: Merge Techniques
-- Merge types (fast-forward, 3-way merge)
-- Conflict resolution strategies
-- Pull request processes
+### Module 3: Branching & Merging
+- Branch creation and management
+- Merge techniques and conflict resolution
+- Team collaboration through pull requests
 
-### Module 4: Remote Collaboration
-- Working with remote repositories
-- GitHub/GitLab workflows
-- Team collaboration best practices
-
-### Module 5: Advanced Git Features
-- Stash management for WIP
-- Rebase for clean history
-- Cherry-pick and selective commits
+### Module 4: Advanced Git Features
+- Clean commit history with `git rebase`
+- Work-in-progress management with `git stash`
+- Professional Git workflow best practices
 
 ## File Structure
 
@@ -65,13 +56,13 @@ sessions/session3/
 ├── git/                          # Main Git curriculum
 │   └── git-lesson/              # Git lesson scripts and tutorials
 │       ├── git_basic_setup.sh     # Repository setup and basic commands
+│       ├── git_remote_online.sh   # GitHub collaboration and remotes
 │       ├── git_branching_strategy.sh  # Branch management workflows
 │       ├── git_merge.sh           # Merge techniques and conflicts
-│       ├── git_collaboration.sh   # Team collaboration exercises
-│       ├── git_remote_online.sh   # Remote repository operations
-│       ├── git_rebase.sh          # Rebase and history management
-│       └── git_stash.sh           # Work-in-progress management
-├── advanced/                     # Optional advanced topics
+│       ├── git_rebase.sh          # Clean commit history management
+│       ├── git_stash.sh           # Work-in-progress management
+│       └── git_collaboration.sh   # Team collaboration exercises
+├── advanced-pipeline-reliability/  # Optional advanced topics
 │   ├── code/                      # Pipeline reliability code
 │   │   ├── init_schemas.py        # Initialize database schemas
 │   │   ├── idempotent_pipeline.py # Idempotent gold layer pipeline
@@ -79,16 +70,16 @@ sessions/session3/
 │   ├── tests/                     # Test cases
 │   ├── docker/                    # Docker configurations
 │   └── requirement.txt            # Python dependencies
-├── Notes.md                       # Updated theory notes (Git focus + advanced)
+├── Notes.md                       # Git theory notes
 ├── README.md                      # This file
-└── docker-compose.yml             # Moved to advanced/ as optional
+└── .env.example                   # Environment variables template
 ```
 
 ## Git Learning Path
 
-### Step 1: Basic Git Setup
+### Step 1: Repository Setup & Basic Workflow
 
-Run the Git basics tutorial:
+Learn Git fundamentals:
 
 ```bash
 cd sessions/session3
@@ -98,52 +89,39 @@ bash git/git-lesson/git_basic_setup.sh
 **What you'll learn:**
 - Git configuration (user.name, user.email)
 - Repository initialization (`git init`)
-- Basic workflow: add → commit → push
+- Essential workflow: `git status`, `git add`, `git commit`
 - Understanding `.gitignore` and staging area
 
-### Step 2: Branching Strategy
+### Step 2: Remote Collaboration with GitHub
 
-Practice branch management:
-
-```bash
-bash git/git-lesson/git_branching_strategy.sh
-```
-
-**What you'll learn:**
-- Creating feature branches
-- Switching between branches
-- Branch naming conventions
-- Merge workflows
-
-### Step 3: Merge Techniques
-
-Master merging and conflict resolution:
-
-```bash
-bash git/git-lesson/git_merge.sh
-```
-
-**What you'll learn:**
-- Different merge types
-- Handling merge conflicts
-- Conflict resolution strategies
-- Merge vs rebase decisions
-
-### Step 4: Remote Collaboration
-
-Work with remote repositories:
+Master GitHub workflows:
 
 ```bash
 bash git/git-lesson/git_remote_online.sh
 ```
 
 **What you'll learn:**
-- GitHub/GitLab integration
-- Pull request workflows
-- Team collaboration best practices
-- Remote branch management
+- Repository forking and cloning
+- Working with remotes (`git push`, `git pull`)
+- GitHub pull request process
+- Team collaboration through GitHub interface
 
-### Step 5: Advanced Git Features
+### Step 3: Branching & Merging
+
+Practice branch management:
+
+```bash
+bash git/git-lesson/git_branching_strategy.sh
+bash git/git-lesson/git_merge.sh
+```
+
+**What you'll learn:**
+- Creating and switching branches
+- Merge techniques and conflict resolution
+- Pull request best practices
+- Team collaboration workflows
+
+### Step 4: Advanced Git Features
 
 Master professional Git workflows:
 
@@ -154,23 +132,23 @@ bash git/git-lesson/git_collaboration.sh
 ```
 
 **What you'll learn:**
-- Clean commit history with rebase
-- Stashing work-in-progress
+- Clean commit history with `git rebase`
+- Work-in-progress management with `git stash`
 - Advanced collaboration scenarios
-- Professional Git workflows
+- Professional Git best practices
 
 ## Advanced Pipeline Reliability (Optional)
 
-After mastering Git, explore advanced pipeline reliability concepts in the `advanced/` folder:
+After mastering Git fundamentals, explore production-grade data engineering concepts in the `advanced-pipeline-reliability/` folder:
 
 ### Setup for Advanced Section
 
 ```bash
-cd sessions/session3/advanced
+cd sessions/session3/advanced-pipeline-reliability
 # Install dependencies
 pip install -r requirement.txt
 
-# Initialize database schemas (optional for Git learning)
+# Initialize database schemas
 python code/init_schemas.py
 ```
 
@@ -180,7 +158,7 @@ python code/init_schemas.py
 - **Retry Logic**: Exponential backoff mechanisms
 - **Structured Logging**: JSON-based pipeline monitoring
 
-*Note: The advanced section requires completion of Sessions 1 & 2 and is optional for Git-focused learners.*
+*Note: This advanced section requires completion of Sessions 1 & 2 and is optional for Git-focused learners.*
 
 ## Git Best Practices
 
@@ -269,9 +247,9 @@ git reset --hard HEAD
 
 After completing Session 3 Git curriculum:
 - Practice Git workflows on personal projects
-- Explore advanced features in the `advanced/` folder
-- Move to Session 4: Orchestration & Operations
-- Review the `Notes.md` for theoretical concepts
+- Explore advanced pipeline reliability in the `advanced-pipeline-reliability/` folder
+- Move to Session 4: AWS Data Engineering Fundamentals
+- Review the `Notes.md` for theoretical Git concepts
 
 ## References
 

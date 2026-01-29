@@ -55,28 +55,26 @@ The syllabus is curated from comprehensive experience including:
 
 **Deliverable**: Complete ETL pipeline producing analytics-ready data layers
 
-### Session 3: Git Collaboration & Version Control
-**Objective**: Develop professional collaboration and reliability patterns
+### Session 3: Git Fundamentals & Collaboration
+**Objective**: Master essential version control skills for collaborative development
 
-**Primary Focus**: Git Fundamentals
-- Repository setup and basic configuration
-- Branching strategies and merge techniques
-- Remote collaboration workflows
-- Pull request processes and code review
-- Advanced Git features such as rebase, stash, cherry-pick
-
-**Advanced Section**: Pipeline Reliability
-- Idempotency patterns and checkpoint mechanisms
-- Retry logic with exponential backoff
-- Structured logging and error handling
-- Failure scenario analysis and recovery
+**Core Git Components**:
+- Repository initialization and configuration (git init, git status)
+- Basic workflow commands (git add, git commit)
+- Remote collaboration and GitHub integration (fork, clone)
+- Branching and merging strategies (git merge, pull requests)
+- Code history management (git rebase)
 
 **Technical Focus**:
-- Git workflow optimization for team environments
-- Production-grade pipeline reliability patterns
-- Error handling and recovery strategies
+- Git fundamental concepts and workflow
+- Collaboration with GitHub pull requests
+- Branch management and merging
+- Clean commit history with rebase
+- Team development best practices
 
-**Deliverable**: Professional Git workflow skills and understanding of production reliability patterns
+**Deliverable**: Proficient Git workflow skills for team collaboration
+
+**Advanced Topics**: Optional pipeline reliability patterns available in `advanced/` subfolder
 
 ### Session 4: AWS Data Engineering Fundamentals
 **Objective**: Master cloud data engineering by building the same pipeline locally and on AWS
@@ -136,6 +134,19 @@ sessions/sessionX/
 ├── tests/                 # Test cases and validation
 ├── docker/                # Container configurations
 └── requirement.txt        # Python dependencies
+```
+
+**Session 3 Exception:**
+```
+sessions/session3/
+├── git/                  # Git curriculum and lessons
+├── README.md              # Git instructions and workflow
+├── Notes.md               # Git theory and concepts
+└── advanced-pipeline-reliability/  # Optional advanced topics
+    ├── code/              # Pipeline reliability code
+    ├── tests/             # Test cases
+    ├── docker/            # Docker configurations
+    └── requirement.txt    # Python dependencies
 ```
 
 Execute sessions in sequence as each builds upon previous knowledge and infrastructure.
