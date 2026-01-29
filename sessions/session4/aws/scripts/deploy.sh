@@ -31,7 +31,6 @@ echo "  Stack Name: $STACK_NAME"
 echo "  Region: $AWS_REGION"
 echo "  Environment: $ENVIRONMENT"
 echo "  Data Bucket: $DATA_BUCKET_NAME"
-echo "  Allowed CIDR: $ALLOWED_CIDR"
 echo ""
 
 read -p "Continue with deployment? (yes/no): " confirm
